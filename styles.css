@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+    outline: 1px solid rgb(49, 49, 49);
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    color: #fff;
+    background: #0b0b0b;
+}
+
+.hero-home {
+    min-height: 100svh;
+    padding: 1.5rem;
+
+    background:
+        linear-gradient(180deg,
+            #0b0b0b 6%,
+            #0060b5 47%,
+            #ff822f 88%);
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: clamp(2rem, 7vw, 5rem);
+    font-weight: 800;
+    font-size: clamp(1rem, 1.4vw, 1.35rem);
+    letter-spacing: 0.02em;
+}
+
+.main-nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.statement {
+    align-self: center;
+    display: grid;
+    gap: clamp(3rem, 8vh, 5rem);
+    justify-items: center;
+    text-align: center;
+    margin-bottom: 6vh;
+}
+
+.statement-item {
+    display: grid;
+    justify-items: center;
+    line-height: 0.9;
+}
+
+.statement-word {
+    font-weight: 800;
+    font-size: clamp(2.2rem, 9vw, 4.8rem);
+    letter-spacing: -0.04em;
+}
+
+.statement-arrow {
+    font-weight: 800;
+    font-size: clamp(2.4rem, 9vw, 3.8rem);
+    line-height: 1;
+    margin: 0.18em 0;
+}
+
+  .rot {
+      -webkit-transform: rotate(40deg);
+      -moz-transform: rotate(40deg);
+      -o-transform: rotate(40deg);
+      -ms-transform: rotate(40deg);
+      transform: rotate(40deg);
+  }
+
+.statement-word--second {
+    transform: translateX(0.45em);
+}
+
+/* Desktop / horizontal */
+@media (min-width: 768px) and (orientation: landscape) {
+    .hero-home {
+        padding: 1.25rem clamp(2rem, 5vw, 5rem);
+    }
+
+    .statement {
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(2rem, 6vw, 7rem);
+        margin-bottom: 2vh;
+    }
+
+    .statement-word {
+        font-size: clamp(2.6rem, 4.5vw, 4.6rem);
+    }
+
+    .statement-arrow {
+        font-size: clamp(2rem, 3vw, 3rem);
+    }
+}
