@@ -664,13 +664,11 @@ p = "Photography" + "> see more"
   min-height: 100svh;
   overflow: hidden;
   padding: 1.25rem clamp(1rem, 5vw, 5rem) 3.25rem;
-  background:
-    linear-gradient(
-      180deg,
-      #0b0b0b 6%,
-      #02559F 65%,
-      #ff822f 100%
-    );
+  background-color: #000;
+  background-image: url("imgs/gradient.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
