@@ -9,7 +9,73 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar modal
     initModal();
+
+    // Inicializar transición del Hero en la home
+    initHeroScrollTransition();
 });
+
+function initHeroScrollTransition() {
+    const hero = document.querySelector('.hero-home');
+    const projects = document.querySelector('.portfolio-projects');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!hero || !projects || reduceMotion || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const nav = hero.querySelector('.main-nav');
+    const statement = hero.querySelector('.statement');
+    const identity = hero.querySelector('.hero-identity');
+    const heroContent = [nav, statement, identity].filter(Boolean);
+    const mm = gsap.matchMedia();
+
+    function createHeroTimeline(values) {
+        gsap.set(hero, { '--hero-overlay-opacity': 0 });
+        gsap.set(heroContent, { clearProps: 'opacity,transform' });
+        gsap.set(projects, { clearProps: 'opacity,transform' });
+
+        const timeline = gsap.timeline({
+            defaults: { ease: 'none' },
+            scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: values.end,
+                scrub: 0.6
+            }
+        });
+
+        timeline
+            .to(hero, { '--hero-overlay-opacity': values.overlayOpacity, duration: 1 }, 0)
+            .to(statement, { opacity: 0.04, y: values.statementY, duration: 0.72 }, 0.18)
+            .to(nav, { opacity: 0.06, y: values.navY, duration: 0.64 }, 0.28)
+            .to(identity, { opacity: 0.03, y: values.identityY, duration: 0.5 }, 0.52)
+            .fromTo(projects, { opacity: 0.88, y: values.projectsY }, { opacity: 1, y: 0, duration: 0.34 }, 0.66);
+    }
+
+    mm.add('(min-width: 768px)', () => {
+        createHeroTimeline({
+            overlayOpacity: 0.96,
+            statementY: -64,
+            navY: -34,
+            identityY: -42,
+            projectsY: 20,
+            end: 'bottom top'
+        });
+    });
+
+    mm.add('(max-width: 767px)', () => {
+        createHeroTimeline({
+            overlayOpacity: 0.9,
+            statementY: -34,
+            navY: -18,
+            identityY: -24,
+            projectsY: 12,
+            end: 'bottom top'
+        });
+    });
+}
 
 function initCarousel(carousel) {
     const items = carousel.querySelectorAll('.carousel-item');

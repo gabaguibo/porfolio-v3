@@ -1,3 +1,11 @@
+:root {
+  --color-text: #fff;
+  --color-muted: #cfcfcf;
+  --color-muted-strong: #9b9b9b;
+  --color-link-hover: #f4f4f4;
+  --font-display: 'IBM Plex Sans', sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -490,8 +498,8 @@ p = "Photography" + "> see more"
 .project {
   display: flex;
   align-items: center;
-  gap: 5%;
-  margin-bottom: 5%;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .project--reverse {
@@ -502,34 +510,70 @@ p = "Photography" + "> see more"
   flex: 1;
   max-width: 50%;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1 / 1;
   display: block;
-  object-fit: cover;
+  position: relative;
+  overflow: hidden;
+  margin-inline: auto;
 }
 
-.project__media video {
+.project__media > img,
+.project__media > video,
+.project__media > canvas,
+.project__media > #veloptix-canvas {
   width: 100%;
-  height: auto;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.project__media > #veloptix-canvas {
+  position: relative;
+}
+
+.project__media canvas {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
 .project__content {
   flex: 1;
   max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
-.project__content h3 {
-  font-size: calc(1em + 2.5vw);
-  margin-bottom: 2%;
+.project__title {
+  font-size: clamp(1rem, 2.2vw, 1.7rem);
+  margin: 0 0 0.35rem;
+  line-height: 1.05;
   font-family: 'IBM Plex Sans', sans-serif;
-  color: white;
+  color: var(--color-text);
+  text-align: left;
 }
 
-.project__content .meta {
-  font-size: calc(0.5em + 1vw);
-  margin-bottom: 5%;
+.project__meta {
+  font-size: clamp(0.65rem, 1vw, 0.95rem);
+  margin: 0 0 0.8rem;
+  line-height: 1.35;
   font-family: 'IBM Plex Sans', sans-serif;
-  color: #f0f0f0;
+  color: var(--color-muted);
+  text-align: left;
+}
+
+.project__link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.1rem;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--color-muted);
+  text-decoration: none;
+  text-align: left;
+  transition: color 180ms ease, opacity 180ms ease;
 }
 
 .seemore-btn,
@@ -537,16 +581,20 @@ p = "Photography" + "> see more"
   font-family: 'IBM Plex Sans', sans-serif;
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--color-muted);
   cursor: pointer;
-  font-size: calc(0.5em + 1vw);
+  font-size: clamp(0.7rem, 1vw, 0.95rem);
   text-decoration: none;
   padding: 0;
+  transition: color 180ms ease, opacity 180ms ease;
 }
 
 .seemore-btn:hover,
-.btn:hover {
-  opacity: 0.8;
+.btn:hover,
+.project__link:hover,
+.project__link:focus-visible {
+  color: var(--color-link-hover);
+  opacity: 0.95;
 }
 
 /* Modal */
@@ -623,8 +671,8 @@ p = "Photography" + "> see more"
 
   .project {
     flex-direction: column;
-    gap: 5%;
-    margin-bottom: 15%;
+    gap: clamp(0.8rem, 2.2vh, 1.15rem);
+    margin-bottom: clamp(2rem, 5vh, 3rem);
   }
 
   .project--reverse {
@@ -632,25 +680,130 @@ p = "Photography" + "> see more"
   }
 
   .project__media {
-    max-width: 100%;
+    max-width: 80%;
+    width: min(100%, 24rem);
+    aspect-ratio: 1 / 1;
   }
 
   .project__content {
     max-width: 100%;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0 0.2rem;
   }
 
-  .project__content h3 {
-    font-size: calc(1.5em + 5vw);
+  .project__title {
+    font-size: clamp(1.2rem, 4.7vw, 1.7rem);
+    line-height: 1.05;
+    text-align: center;
+    margin: 0;
+  }
+
+  .project__meta {
+    font-size: clamp(0.72rem, 2.8vw, 0.95rem);
+    line-height: 1.3;
+    margin: 0;
     text-align: center;
   }
 
-  .project__content .meta {
-    font-size: calc(0.6em + 2.2vw);
-    text-align: center;
+  .project__link {
+    margin-top: 0;
+    font-size: clamp(0.72rem, 2.8vw, 0.95rem);
   }
 
   .project__content > p {
+    margin: 0;
     text-align: center;
+  }
+}
+
+/* Responsive para tablet y escritorio medio */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .project--reverse .project__content {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .project--reverse .project__content > * {
+    text-align: right;
+  }
+
+  .project:not(.project--reverse) .project__content {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .project:not(.project--reverse) .project__content > * {
+    text-align: left;
+  }
+}
+
+@media (min-width: 1200px) {
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.35rem, 2vw, 2.4rem);
+    align-items: start;
+  }
+
+  .project {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1rem, 1.7vw, 2rem);
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .project--reverse {
+    flex-direction: initial;
+  }
+
+  .project__media {
+    max-width: min(100%, clamp(22rem, 24vw, 27rem));
+    width: 100%;
+    justify-self: center;
+  }
+
+  .project__content {
+    max-width: 100%;
+    justify-self: start;
+  }
+
+  .project:nth-child(4n + 1) .project__media,
+  .project:nth-child(4n + 2) .project__media {
+    order: 1;
+  }
+
+  .project:nth-child(4n + 1) .project__content,
+  .project:nth-child(4n + 2) .project__content {
+    order: 2;
+    justify-self: start;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .project:nth-child(4n + 1) .project__content > *,
+  .project:nth-child(4n + 2) .project__content > * {
+    text-align: left;
+  }
+
+  .project:nth-child(4n + 3) .project__media,
+  .project:nth-child(4n + 4) .project__media {
+    order: 2;
+  }
+
+  .project:nth-child(4n + 3) .project__content,
+  .project:nth-child(4n + 4) .project__content {
+    order: 1;
+    justify-self: end;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .project:nth-child(4n + 3) .project__content > *,
+  .project:nth-child(4n + 4) .project__content > * {
+    text-align: right;
   }
 }
 
@@ -659,6 +812,7 @@ p = "Photography" + "> see more"
    HOME HERO — PORTFOLIO V3
    ============================================ */
 .hero-home {
+  --hero-overlay-opacity: 0;
   position: relative;
   isolation: isolate;
   min-height: 100svh;
@@ -671,6 +825,16 @@ p = "Photography" + "> see more"
   background-size: cover;
   display: grid;
   grid-template-rows: auto 1fr auto;
+}
+
+.hero-home::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+  opacity: var(--hero-overlay-opacity);
+  pointer-events: none;
 }
 
 .hero-home > * {
@@ -785,13 +949,21 @@ p = "Photography" + "> see more"
 }
 
 .back-to-top {
-  margin-top: 5%;
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  padding: 0.5rem 0 1.25rem;
   text-align: center;
 }
 
 .back-to-top a {
-  color: #fff;
+  color: var(--color-muted);
   text-decoration: none;
+  transition: color 180ms ease, opacity 180ms ease;
+}
+
+.back-to-top a:hover,
+.back-to-top a:focus-visible {
+  color: var(--color-link-hover);
+  opacity: 0.95;
 }
 
 .project__media video {
@@ -867,7 +1039,7 @@ p = "Photography" + "> see more"
   }
 
   .statement {
-    gap: clamp(1rem, 2.4vh, 1.7rem);
+    gap: clamp(4vh, 6vh, 10vh);
     padding: 1rem 0;
   }
 
@@ -1040,8 +1212,7 @@ a { text-underline-offset: .18em; }
 .project-placeholder--card {
   aspect-ratio: 1 / 1;
 }
-.project:nth-child(odd) .project__content { text-align: left; }
-.project:nth-child(even) .project__content { text-align: right; }
+
 
 .case-study__intro {
   display: grid;
