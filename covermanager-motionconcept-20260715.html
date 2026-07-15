@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CoverManager Motion Test — Gabriel Aljundi</title>
+  <meta
+    name="description"
+    content="Self-initiated motion design test inspired by CoverManager."
+  />
+
+  <link href="styles.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --page-bg: #000;
+      --text: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--page-bg);
+    }
+
+    body {
+      min-height: 100svh;
+      overflow: hidden;
+      color: var(--text);
+      font-family:
+        "IBM Plex Mono",
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+    }
+
+    /*
+      Two rows:
+      1) Video area using all available height.
+      2) Back link, always visible and never overlapped.
+    */
+    .project-embed-page {
+      width: 100%;
+      height: 100svh;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 0.85rem;
+      padding: 1rem 1rem 1.2rem;
+      background: var(--page-bg);
+    }
+
+    .embed-shell {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    /*
+      Vertical 9:16 player:
+      - Height is the primary constraint on desktop.
+      - Width follows automatically.
+      - It can never exceed the viewport width.
+    */
+    .embed-frame {
+      position: relative;
+      height: 100%;
+      width: auto;
+      max-width: 100%;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      background: #000;
+      cursor: pointer;
+    }
+
+    .embed-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+      pointer-events: none;
+    }
+
+    /*
+      Custom play/pause control.
+      Hidden while playing; shown on hover/focus.
+    */
+    .video-control {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      padding: 0;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(0, 0, 0, 0.12),
+          rgba(0, 0, 0, 0) 42%
+        );
+      color: #fff;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity 180ms ease;
+    }
+
+    .video-control__icon {
+      width: clamp(3.25rem, 7vw, 5.25rem);
+      height: clamp(3.25rem, 7vw, 5.25rem);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.22);
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .video-control:hover .video-control__icon,
+    .video-control:focus-visible .video-control__icon {
+      transform: scale(1.06);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .video-control svg {
+      width: 34%;
+      height: 34%;
+      overflow: visible;
+      fill: currentColor;
+    }
+
+    .embed-frame.is-playing .video-control {
+      opacity: 0;
+    }
+
+    .embed-frame.is-playing:hover .video-control,
+    .embed-frame.is-playing:focus-within .video-control {
+      opacity: 1;
+    }
+
+    .case-study__back {
+      margin: 0;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .case-study__back a {
+      display: inline-block;
+      color: var(--text);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: opacity 160ms ease;
+    }
+
+    .case-study__back a:hover,
+    .case-study__back a:focus-visible {
+      opacity: 0.62;
+    }
+
+    /*
+      On narrow screens, width becomes the limiting dimension.
+    */
+    @media (max-width: 600px) {
+      .project-embed-page {
+        gap: 0.7rem;
+        padding: 0.75rem 0.75rem 1rem;
+      }
+
+      .embed-frame {
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-control,
+      .video-control__icon,
+      .case-study__back a {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="project-embed-page">
+    <div class="embed-shell">
+      <div class="embed-frame" id="video-frame">
+        <iframe
+          id="vimeo-player"
+          src="https://player.vimeo.com/video/1210266599?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;controls=0&amp;title=0&amp;byline=0&amp;portrait=0&amp;dnt=1"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          title="CoverManager Motion Test — Gabriel Aljundi"
+        ></iframe>
+
+        <button
+          class="video-control"
+          id="video-control"
+          type="button"
+          aria-label="Play video"
+        >
+          <span class="video-control__icon" aria-hidden="true">
+            <svg id="play-icon" viewBox="0 0 24 24">
+              <path d="M8 5.5v13l10-6.5-10-6.5z"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <p class="case-study__back">
+      <a href="index.html#projects">← Back to projects</a>
+    </p>
+  </main>
+
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script>
+    const iframe = document.getElementById("vimeo-player");
+    const frame = document.getElementById("video-frame");
+    const control = document.getElementById("video-control");
+    const icon = document.getElementById("play-icon");
+    const player = new Vimeo.Player(iframe);
+
+    const playPath = '<path d="M8 5.5v13l10-6.5-10-6.5z"></path>';
+    const pausePath =
+      '<path d="M7 5h4v14H7z"></path><path d="M13 5h4v14h-4z"></path>';
+
+    function setPlayingState(isPlaying) {
+      frame.classList.toggle("is-playing", isPlaying);
+      control.setAttribute("aria-label", isPlaying ? "Pause video" : "Play video");
+      icon.innerHTML = isPlaying ? pausePath : playPath;
+    }
+
+    async function togglePlayback() {
+      try {
+        const paused = await player.getPaused();
+
+        if (paused) {
+          await player.play();
+        } else {
+          await player.pause();
+        }
+      } catch (error) {
+        console.error("Vimeo playback error:", error);
+      }
+    }
+
+    control.addEventListener("click", togglePlayback);
+    player.on("play", () => setPlayingState(true));
+    player.on("pause", () => setPlayingState(false));
+    player.on("ended", () => setPlayingState(false));
+  </script>
+</body>
+</html>
