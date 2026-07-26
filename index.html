@@ -44,29 +44,40 @@
 </div>
 </section>
 <main class="portfolio-projects" id="projects">
-<section aria-label="Selected projects" class="grid">
+<section aria-label="Selected projects" class="grid is-grid" data-project-view="grid">
+<div aria-label="Filter projects by discipline" class="project-filters">
+<button aria-pressed="true" class="project-filter is-active" data-filter="all" type="button">All</button>
+<button aria-pressed="false" class="project-filter" data-filter="web" type="button">Web</button>
+<button aria-pressed="false" class="project-filter" data-filter="motion" type="button">Motion</button>
+<button aria-pressed="false" class="project-filter" data-filter="graphic" type="button">Graphic</button>
+<button aria-pressed="false" class="project-filter" data-filter="photo" type="button">Photo</button>
+</div>
+<div aria-label="Project view" class="project-view-toggle">
+<button aria-pressed="true" class="project-view-toggle__button is-active" data-view="grid" type="button">Grid</button>
+<button aria-pressed="false" class="project-view-toggle__button" data-view="list" type="button">List</button>
+</div>
 <ul class="projects" role="list">
-<li class="project">
+<li class="project" data-disciplines="web" data-project-number="01">
 <a aria-label="View Veloptix Consulting project" class="project__media veloptix-sketch-link" href="veloptix.html"><div aria-hidden="true" id="veloptix-canvas"></div></a>
 <div class="project__content"><h3 class="project__title">Veloptix Consulting</h3><p class="meta project__meta">Web design</p><p><a class="btn project__link" href="veloptix.html">See project</a></p></div>
 </li>
-<li class="project project--reverse">
+<li class="project project--reverse" data-disciplines="graphic motion" data-project-number="02">
 <a aria-label="View Detroit Chicago project" class="project__media" href="detroitchicago.html"><img alt="DETROIT CHICAGO vinyl — Generative graphics" loading="lazy" src="imgs/H_P2.webp"/></a>
 <div class="project__content"><h3 class="project__title"><i>DETROIT</i> · <i>CHICAGO</i> vinyl</h3><p class="meta project__meta">Generative graphics</p><p><a class="btn project__link" href="detroitchicago.html">See more</a></p></div>
 </li>
-<li class="project">
+<li class="project" data-disciplines="motion graphic" data-project-number="03">
 <a aria-label="View PEPPERONCINO project" class="project__media" href="pepperoncino.html"><video autoplay="" loop="" muted="" playsinline="" preload="metadata"><source src="imgs/Pepperoncino.mp4" type="video/mp4"/></video></a>
 <div class="project__content"><h3 class="project__title">PEPPERONCINO</h3><p class="meta project__meta">Motion graphics + typography</p><p><a class="btn project__link" href="pepperoncino.html">See more</a></p></div>
 </li>
-<li class="project project--reverse">
+<li class="project project--reverse" data-disciplines="photo" data-project-number="04">
 <a aria-label="View Still lifes project" class="project__media" href="stilllifes.html"><img alt="Still lifes for the 2020 season" loading="lazy" src="imgs/H_P1.webp"/></a>
 <div class="project__content"><h3 class="project__title">Still lifes for the 2020 season</h3><p class="meta project__meta">Photography</p><p><a class="btn project__link" href="stilllifes.html">See more</a></p></div>
 </li>
-<li class="project">
+<li class="project" data-disciplines="photo" data-project-number="05">
 <a aria-label="View Las que se dejaron capturar project" class="project__media" href="lasquesedejaroncapturar.html"><img alt="Las que se dejaron capturar — Photography" loading="lazy" src="imgs/H_P3.webp"/></a>
 <div class="project__content"><h3 class="project__title">Las que se dejaron capturar</h3><p class="meta project__meta">Photography</p><p><a class="btn project__link" href="lasquesedejaroncapturar.html">See more</a></p></div>
 </li>
-<li class="project project--reverse">
+<li class="project project--reverse" data-disciplines="graphic motion" data-project-number="06">
 <a aria-label="Watch Gabriel Aljundi's showreel" class="project__media" href="showreel.html"><video autoplay="" loop="" muted="" playsinline="" preload="metadata"><source src="imgs/REEL_preview.mp4" type="video/mp4"/></video></a>
 <div class="project__content"><h3 class="project__title">SHOWREEL</h3><p class="meta project__meta">Graphic design + motion + video</p><p><a class="btn project__link" href="showreel.html">Watch full reel</a></p></div>
 </li>

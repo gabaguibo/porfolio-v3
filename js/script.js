@@ -1,6 +1,12 @@
 // Carousel personalizado (reemplazo de Bootstrap)
 document.addEventListener('DOMContentLoaded', function() {
     initReadingProgress();
+    initPointerEffects();
+    initScrollEntryAnimations();
+    initSubtleParallax();
+    initProjectCardTilt();
+    initProjectFilters();
+    initProjectViewToggle();
 
     // Inicializar todos los carruseles
     const carousels = document.querySelectorAll('.carousel');
@@ -63,6 +69,530 @@ function initReadingProgress() {
     window.addEventListener('resize', requestProgressUpdate, { passive: true });
 }
 
+function initPointerEffects() {
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+    if (reduceMotionQuery.matches || !finePointerQuery.matches) {
+        return;
+    }
+
+    const magneticSelector = '.main-nav a, .project-page-nav a, .project__link, .back-to-top a, .about-contact a';
+    const magneticTargets = Array.from(document.querySelectorAll(magneticSelector));
+
+    if (!magneticTargets.length) {
+        return;
+    }
+
+    const halo = document.createElement('div');
+    halo.className = 'cursor-halo';
+    halo.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(halo);
+
+    magneticTargets.forEach(function(target) {
+        target.classList.add('magnetic-link');
+    });
+
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
+    let hasPointer = false;
+    let activeMagnetic = null;
+    let animationFrame = null;
+
+    function renderHalo() {
+        currentX += (targetX - currentX) * 0.16;
+        currentY += (targetY - currentY) * 0.16;
+        halo.style.transform = 'translate3d(' + currentX.toFixed(2) + 'px, ' + currentY.toFixed(2) + 'px, 0) translate(-50%, -50%) scale(var(--cursor-halo-scale, 1))';
+        animationFrame = window.requestAnimationFrame(renderHalo);
+    }
+
+    function startHalo() {
+        if (animationFrame === null) {
+            animationFrame = window.requestAnimationFrame(renderHalo);
+        }
+    }
+
+    function resetMagnetic(target) {
+        if (!target) {
+            return;
+        }
+
+        target.style.setProperty('--magnetic-x', '0px');
+        target.style.setProperty('--magnetic-y', '0px');
+    }
+
+    function stopEffects() {
+        if (animationFrame !== null) {
+            window.cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
+        halo.remove();
+        magneticTargets.forEach(function(target) {
+            resetMagnetic(target);
+            target.classList.remove('magnetic-link');
+        });
+    }
+
+    document.addEventListener('pointermove', function(event) {
+        if (event.pointerType !== 'mouse') {
+            return;
+        }
+
+        targetX = event.clientX;
+        targetY = event.clientY;
+
+        if (!hasPointer) {
+            currentX = targetX;
+            currentY = targetY;
+            hasPointer = true;
+            halo.classList.add('is-visible');
+            startHalo();
+        }
+
+        const nextMagnetic = event.target.closest(magneticSelector);
+
+        if (activeMagnetic && activeMagnetic !== nextMagnetic) {
+            resetMagnetic(activeMagnetic);
+        }
+
+        activeMagnetic = nextMagnetic;
+        halo.classList.toggle('is-interactive', Boolean(activeMagnetic));
+
+        if (activeMagnetic) {
+            const rect = activeMagnetic.getBoundingClientRect();
+            const offsetX = ((event.clientX - rect.left) / rect.width - 0.5) * 6;
+            const offsetY = ((event.clientY - rect.top) / rect.height - 0.5) * 6;
+            activeMagnetic.style.setProperty('--magnetic-x', offsetX.toFixed(2) + 'px');
+            activeMagnetic.style.setProperty('--magnetic-y', offsetY.toFixed(2) + 'px');
+        }
+    }, { passive: true });
+
+    document.addEventListener('pointerout', function(event) {
+        if (activeMagnetic && (!event.relatedTarget || !activeMagnetic.contains(event.relatedTarget))) {
+            resetMagnetic(activeMagnetic);
+            activeMagnetic = null;
+            halo.classList.remove('is-interactive');
+        }
+    }, { passive: true });
+
+    window.addEventListener('pointerleave', function() {
+        resetMagnetic(activeMagnetic);
+        activeMagnetic = null;
+        halo.classList.remove('is-visible', 'is-interactive');
+    }, { passive: true });
+
+    function handleCapabilityChange() {
+        if (reduceMotionQuery.matches || !finePointerQuery.matches) {
+            stopEffects();
+        }
+    }
+
+    if (typeof reduceMotionQuery.addEventListener === 'function') {
+        reduceMotionQuery.addEventListener('change', handleCapabilityChange);
+    }
+
+    if (typeof finePointerQuery.addEventListener === 'function') {
+        finePointerQuery.addEventListener('change', handleCapabilityChange);
+    }
+}
+
+function initScrollEntryAnimations() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+        return;
+    }
+
+    const revealSelector = [
+        '.project',
+        '.case-study__header',
+        '.case-study__intro-copy',
+        '.case-study__fact',
+        '.case-study__back',
+        '.about-copy > p'
+    ].join(', ');
+
+    const forbiddenSelector = 'main, section, .projects, .portfolio-projects, .grid';
+    const revealItems = Array.from(document.querySelectorAll(revealSelector))
+        .filter(function(item) {
+            return !item.matches(forbiddenSelector);
+        });
+
+    if (!revealItems.length) {
+        return;
+    }
+
+    let observer;
+
+    try {
+        observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+            });
+        }, {
+            threshold: 0.04,
+            rootMargin: '0px 0px -8% 0px'
+        });
+    } catch (error) {
+        revealItems.forEach(function(item) {
+            item.classList.add('is-revealed');
+        });
+        return;
+    }
+
+    revealItems.forEach(function(item, index) {
+        item.style.setProperty('--reveal-delay', Math.min(index * 35, 140) + 'ms');
+        observer.observe(item);
+        item.classList.add('reveal-item', 'is-reveal-ready');
+    });
+
+    window.setTimeout(function() {
+        revealItems.forEach(function(item) {
+            if (!item.classList.contains('is-revealed')) {
+                item.classList.add('is-revealed');
+            }
+        });
+    }, 4000);
+}
+
+function initSubtleParallax() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion) {
+        return;
+    }
+
+    const parallaxItems = [];
+    const hero = document.querySelector('.hero-home');
+
+    if (hero) {
+        parallaxItems.push({
+            element: hero,
+            property: '--hero-parallax-y',
+            speed: -0.09,
+            max: 28
+        });
+    }
+
+    document.querySelectorAll('.project__media > img, .project__media > video, .project__media > #veloptix-canvas').forEach(function(element) {
+        element.classList.add('parallax-layer');
+        parallaxItems.push({
+            element: element,
+            property: '--parallax-y',
+            speed: -0.075,
+            max: 22
+        });
+    });
+
+    document.querySelectorAll('.case-study__media img, .case-study__media .project-placeholder').forEach(function(element) {
+        element.classList.add('parallax-layer');
+        parallaxItems.push({
+            element: element,
+            property: '--parallax-y',
+            speed: -0.05,
+            max: 16
+        });
+    });
+
+    if (!parallaxItems.length) {
+        return;
+    }
+
+    let ticking = false;
+
+    function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    function updateParallax() {
+        const viewportCenter = window.innerHeight / 2;
+
+        parallaxItems.forEach(function(item) {
+            const rect = item.element.getBoundingClientRect();
+            const elementCenter = rect.top + rect.height / 2;
+            const offset = clamp((viewportCenter - elementCenter) * item.speed, -item.max, item.max);
+
+            item.element.style.setProperty(item.property, offset.toFixed(2) + 'px');
+        });
+
+        ticking = false;
+    }
+
+    function requestParallaxUpdate() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    }
+
+    updateParallax();
+    window.addEventListener('scroll', requestParallaxUpdate, { passive: true });
+    window.addEventListener('resize', requestParallaxUpdate, { passive: true });
+}
+
+function initProjectCardTilt() {
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const projects = Array.from(document.querySelectorAll('.project'));
+
+    if (reduceMotionQuery.matches || !finePointerQuery.matches || !projects.length) {
+        return;
+    }
+
+    let activeProject = null;
+    let pointerX = 0;
+    let pointerY = 0;
+    let ticking = false;
+
+    function resetProject(project) {
+        if (!project) {
+            return;
+        }
+
+        project.style.setProperty('--project-tilt-x', '0deg');
+        project.style.setProperty('--project-tilt-y', '0deg');
+    }
+
+    function updateTilt() {
+        if (!activeProject) {
+            ticking = false;
+            return;
+        }
+
+        const rect = activeProject.getBoundingClientRect();
+        const x = (pointerX - rect.left) / rect.width - 0.5;
+        const y = (pointerY - rect.top) / rect.height - 0.5;
+
+        activeProject.style.setProperty('--project-tilt-x', (-y * 5).toFixed(2) + 'deg');
+        activeProject.style.setProperty('--project-tilt-y', (x * 5).toFixed(2) + 'deg');
+        ticking = false;
+    }
+
+    function requestTiltUpdate() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateTilt);
+            ticking = true;
+        }
+    }
+
+    document.addEventListener('pointermove', function(event) {
+        if (event.pointerType !== 'mouse') {
+            return;
+        }
+
+        const nextProject = event.target.closest('.project');
+
+        if (activeProject && activeProject !== nextProject) {
+            resetProject(activeProject);
+        }
+
+        activeProject = nextProject;
+
+        if (!activeProject) {
+            return;
+        }
+
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        requestTiltUpdate();
+    }, { passive: true });
+
+    document.addEventListener('pointerout', function(event) {
+        if (activeProject && (!event.relatedTarget || !activeProject.contains(event.relatedTarget))) {
+            resetProject(activeProject);
+            activeProject = null;
+        }
+    }, { passive: true });
+
+    window.addEventListener('pointerleave', function() {
+        resetProject(activeProject);
+        activeProject = null;
+    }, { passive: true });
+}
+
+function initProjectFilters() {
+    const filters = document.querySelector('.project-filters');
+    const projectsList = document.querySelector('.projects');
+
+    if (!filters || !projectsList) {
+        return;
+    }
+
+    const buttons = Array.from(filters.querySelectorAll('[data-filter]'));
+    const projects = Array.from(projectsList.querySelectorAll('.project[data-disciplines]'));
+    const validFilters = ['all', 'web', 'motion', 'graphic', 'photo'];
+    const transitionMs = 190;
+
+    if (!buttons.length || !projects.length) {
+        return;
+    }
+
+    let activeFilter = 'all';
+
+    function getProjectInteractiveElements(project) {
+        return Array.from(project.querySelectorAll('a, button, input, select, textarea, [tabindex]'));
+    }
+
+    function setProjectInteractive(project, isInteractive) {
+        getProjectInteractiveElements(project).forEach(function(element) {
+            if (isInteractive) {
+                if (element.dataset.projectFilterManaged === 'true') {
+                    if (Object.prototype.hasOwnProperty.call(element.dataset, 'projectFilterTabindex')) {
+                        element.setAttribute('tabindex', element.dataset.projectFilterTabindex);
+                        delete element.dataset.projectFilterTabindex;
+                    } else {
+                        element.removeAttribute('tabindex');
+                    }
+
+                    delete element.dataset.projectFilterManaged;
+                }
+
+                element.removeAttribute('aria-hidden');
+                return;
+            }
+
+            if (element.dataset.projectFilterManaged !== 'true') {
+                if (element.hasAttribute('tabindex')) {
+                    element.dataset.projectFilterTabindex = element.getAttribute('tabindex');
+                }
+
+                element.dataset.projectFilterManaged = 'true';
+            }
+
+            element.setAttribute('tabindex', '-1');
+            element.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    function projectMatches(project, filter) {
+        if (filter === 'all') {
+            return true;
+        }
+
+        return project.dataset.disciplines.split(/\s+/).includes(filter);
+    }
+
+    function showProject(project) {
+        project.hidden = false;
+        setProjectInteractive(project, true);
+
+        window.requestAnimationFrame(function() {
+            project.classList.remove('is-filtering-out');
+        });
+    }
+
+    function hideProject(project) {
+        project.classList.add('is-filtering-out');
+        setProjectInteractive(project, false);
+
+        window.setTimeout(function() {
+            if (project.classList.contains('is-filtering-out')) {
+                project.hidden = true;
+            }
+        }, transitionMs);
+    }
+
+    function applyFilter(filter) {
+        if (!validFilters.includes(filter) || filter === activeFilter) {
+            return;
+        }
+
+        activeFilter = filter;
+
+        buttons.forEach(function(button) {
+            const isActive = button.dataset.filter === activeFilter;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', String(isActive));
+        });
+
+        projects.forEach(function(project) {
+            if (projectMatches(project, activeFilter)) {
+                showProject(project);
+            } else {
+                hideProject(project);
+            }
+        });
+    }
+
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            applyFilter(button.dataset.filter);
+        });
+    });
+
+    projects.forEach(function(project) {
+        project.hidden = false;
+        project.classList.remove('is-filtering-out');
+        setProjectInteractive(project, true);
+    });
+}
+
+function initProjectViewToggle() {
+    const projectSection = document.querySelector('.grid[data-project-view]');
+
+    if (!projectSection) {
+        return;
+    }
+
+    const buttons = Array.from(projectSection.querySelectorAll('[data-view]'));
+    const validViews = ['grid', 'list'];
+    const storageKey = 'portfolioProjectView';
+
+    if (!buttons.length) {
+        return;
+    }
+
+    function getStoredView() {
+        try {
+            return window.sessionStorage.getItem(storageKey);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function storeView(view) {
+        try {
+            window.sessionStorage.setItem(storageKey, view);
+        } catch (error) {
+            // Session storage can be unavailable in private or locked-down contexts.
+        }
+    }
+
+    function applyView(view, shouldStore) {
+        const nextView = validViews.includes(view) ? view : 'grid';
+
+        projectSection.classList.toggle('is-grid', nextView === 'grid');
+        projectSection.classList.toggle('is-list', nextView === 'list');
+        projectSection.dataset.projectView = nextView;
+
+        buttons.forEach(function(button) {
+            const isActive = button.dataset.view === nextView;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', String(isActive));
+        });
+
+        if (shouldStore) {
+            storeView(nextView);
+        }
+    }
+
+    applyView(getStoredView() || 'grid', false);
+
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            applyView(button.dataset.view, true);
+        });
+    });
+}
+
 function initHeroScrollTransition() {
     const hero = document.querySelector('.hero-home');
     const projects = document.querySelector('.portfolio-projects');
@@ -82,7 +612,6 @@ function initHeroScrollTransition() {
     function createHeroTimeline(values) {
         gsap.set(hero, { '--hero-overlay-opacity': 0 });
         gsap.set(heroContent, { clearProps: 'opacity,transform' });
-        gsap.set(projects, { clearProps: 'opacity,transform' });
 
         const timeline = gsap.timeline({
             defaults: { ease: 'none' },
@@ -97,8 +626,7 @@ function initHeroScrollTransition() {
         timeline
             .to(hero, { '--hero-overlay-opacity': values.overlayOpacity, duration: 1 }, 0)
             .to(statement, { opacity: 0.04, y: values.statementY, duration: 0.72 }, 0.18)
-            .to(identity, { opacity: 0.03, y: values.identityY, duration: 0.5 }, 0.52)
-            .fromTo(projects, { opacity: 0.88, y: values.projectsY }, { opacity: 1, y: 0, duration: 0.34 }, 0.66);
+            .to(identity, { opacity: 0.03, y: values.identityY, duration: 0.5 }, 0.52);
     }
 
     mm.add('(min-width: 768px)', () => {
@@ -106,7 +634,6 @@ function initHeroScrollTransition() {
             overlayOpacity: 0.96,
             statementY: -64,
             identityY: -42,
-            projectsY: 20,
             end: 'bottom top'
         });
     });
@@ -116,7 +643,6 @@ function initHeroScrollTransition() {
             overlayOpacity: 0.9,
             statementY: -34,
             identityY: -24,
-            projectsY: 12,
             end: 'bottom top'
         });
     });
