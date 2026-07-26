@@ -1,5 +1,7 @@
 // Carousel personalizado (reemplazo de Bootstrap)
 document.addEventListener('DOMContentLoaded', function() {
+    initReadingProgress();
+
     // Inicializar todos los carruseles
     const carousels = document.querySelectorAll('.carousel');
     
@@ -14,6 +16,53 @@ document.addEventListener('DOMContentLoaded', function() {
     initHeroScrollTransition();
 });
 
+function initReadingProgress() {
+    const progressBar = document.createElement('div');
+    progressBar.className = 'reading-progress';
+    progressBar.setAttribute('aria-hidden', 'true');
+    document.body.prepend(progressBar);
+
+    const nav = document.querySelector('.main-nav');
+    const directionThreshold = 14;
+    const topThreshold = 72;
+    let lastStableY = window.scrollY || window.pageYOffset || 0;
+    let ticking = false;
+
+    function updateProgress() {
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 1;
+        const nearTop = scrollY <= topThreshold;
+        const nearBottom = maxScroll - scrollY <= 2;
+        const delta = scrollY - lastStableY;
+
+        progressBar.style.setProperty('--reading-progress', progress.toFixed(4));
+
+        if (nav && Math.abs(delta) >= directionThreshold) {
+            nav.classList.toggle('nav-is-hidden', delta > 0 && !nearTop && !nearBottom);
+            lastStableY = scrollY;
+        }
+
+        if (nav && (nearTop || nearBottom)) {
+            nav.classList.remove('nav-is-hidden');
+            lastStableY = scrollY;
+        }
+
+        ticking = false;
+    }
+
+    function requestProgressUpdate() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateProgress);
+            ticking = true;
+        }
+    }
+
+    updateProgress();
+    window.addEventListener('scroll', requestProgressUpdate, { passive: true });
+    window.addEventListener('resize', requestProgressUpdate, { passive: true });
+}
+
 function initHeroScrollTransition() {
     const hero = document.querySelector('.hero-home');
     const projects = document.querySelector('.portfolio-projects');
@@ -25,10 +74,9 @@ function initHeroScrollTransition() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const nav = hero.querySelector('.main-nav');
     const statement = hero.querySelector('.statement');
     const identity = hero.querySelector('.hero-identity');
-    const heroContent = [nav, statement, identity].filter(Boolean);
+    const heroContent = [statement, identity].filter(Boolean);
     const mm = gsap.matchMedia();
 
     function createHeroTimeline(values) {
@@ -49,7 +97,6 @@ function initHeroScrollTransition() {
         timeline
             .to(hero, { '--hero-overlay-opacity': values.overlayOpacity, duration: 1 }, 0)
             .to(statement, { opacity: 0.04, y: values.statementY, duration: 0.72 }, 0.18)
-            .to(nav, { opacity: 0.06, y: values.navY, duration: 0.64 }, 0.28)
             .to(identity, { opacity: 0.03, y: values.identityY, duration: 0.5 }, 0.52)
             .fromTo(projects, { opacity: 0.88, y: values.projectsY }, { opacity: 1, y: 0, duration: 0.34 }, 0.66);
     }
@@ -58,7 +105,6 @@ function initHeroScrollTransition() {
         createHeroTimeline({
             overlayOpacity: 0.96,
             statementY: -64,
-            navY: -34,
             identityY: -42,
             projectsY: 20,
             end: 'bottom top'
@@ -69,7 +115,6 @@ function initHeroScrollTransition() {
         createHeroTimeline({
             overlayOpacity: 0.9,
             statementY: -34,
-            navY: -18,
             identityY: -24,
             projectsY: 12,
             end: 'bottom top'
