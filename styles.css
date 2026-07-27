@@ -212,6 +212,7 @@
 }
 
 .main-nav a.magnetic-link,
+.main-nav button.magnetic-link,
 .project-page-nav a.magnetic-link,
 .project__link.magnetic-link,
 .back-to-top a.magnetic-link,
@@ -757,7 +758,8 @@ p = "Photography" + "> see more"
 
 .project__link {
   display: inline-flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.45rem;
   margin-top: clamp(0.2rem, 0.9vw, 0.55rem);
   font-family: 'IBM Plex Sans', sans-serif;
@@ -766,6 +768,12 @@ p = "Photography" + "> see more"
   text-align: left;
   pointer-events: auto;
   transition: color 180ms ease, opacity 180ms ease;
+}
+
+.project__link-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .project__link::after {
@@ -786,6 +794,10 @@ p = "Photography" + "> see more"
   font-size: clamp(0.72rem, 0.9vw, 0.9rem);
   letter-spacing: 0.04em;
   pointer-events: none;
+}
+
+.grid.is-grid .project::after {
+  content: none;
 }
 
 .project:focus-within .project__media::after {
@@ -991,7 +1003,7 @@ p = "Photography" + "> see more"
 }
 
 .grid.is-list .project {
-  grid-template-columns: minmax(2.6rem, auto) minmax(0, 0.22fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(2.6rem, auto) minmax(0, 0.2fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(0.75rem, 2vw, 1.25rem);
   aspect-ratio: auto;
@@ -1023,6 +1035,7 @@ p = "Photography" + "> see more"
   opacity: 0.62;
   transform: none;
   transition: opacity 180ms ease;
+  pointer-events: none;
 }
 
 .grid.is-list .project__media::after {
@@ -1045,21 +1058,49 @@ p = "Photography" + "> see more"
 .grid.is-list .project__content {
   grid-column: 3;
   grid-row: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(0.55rem, 1.5vw, 1rem);
+  display: block;
   padding: 0;
+  pointer-events: auto;
   transform: none;
 }
 
+.grid.is-list .project__link {
+  position: static;
+  display: grid;
+  grid-template-columns: minmax(0, auto) max-content 2rem;
+  align-items: baseline;
+  justify-content: start;
+  column-gap: clamp(0.55rem, 1.5vw, 1rem);
+  width: 100%;
+  min-height: 2.5rem;
+  margin: 0;
+  overflow: visible;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: inherit;
+  white-space: normal;
+}
+
+.grid.is-list .project__link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .grid.is-list .project__title {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
   max-width: none;
+  min-width: 0;
   font-size: clamp(1rem, 2.4vw, 1.7rem);
   line-height: 1.05;
 }
 
 .grid.is-list .project__meta {
+  position: relative;
+  z-index: 2;
+  grid-column: 2;
   order: initial;
   width: auto;
   max-width: none;
@@ -1068,29 +1109,23 @@ p = "Photography" + "> see more"
   background: transparent;
   color: rgba(255, 255, 255, 0.58);
   font-size: clamp(0.62rem, 1vw, 0.8rem);
-}
-
-.grid.is-list .project__content > p {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  margin: 0;
-}
-
-.grid.is-list .project__link {
-  width: 2rem;
-  min-height: 2rem;
-  justify-content: flex-end;
-  overflow: hidden;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0;
   white-space: nowrap;
 }
 
-.grid.is-list .project__link::before {
-  content: "";
+.grid.is-list .project__link-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .grid.is-list .project__link::after {
+  position: relative;
+  z-index: 2;
+  grid-column: 3;
+  justify-self: end;
   font-size: 1.1rem;
 }
 
@@ -1152,7 +1187,7 @@ p = "Photography" + "> see more"
   }
 
   .grid.is-list .project {
-    grid-template-columns: minmax(2rem, auto) minmax(0, 1fr) auto;
+    grid-template-columns: minmax(2rem, auto) minmax(0, 1fr);
     gap: 0.7rem;
     padding: 0.9rem 0;
   }
@@ -1163,6 +1198,9 @@ p = "Photography" + "> see more"
 
   .grid.is-list .project__content {
     grid-column: 2;
+  }
+
+  .grid.is-list .project__link {
     grid-template-columns: minmax(0, 1fr) auto;
     row-gap: 0.32rem;
   }
@@ -1172,11 +1210,14 @@ p = "Photography" + "> see more"
   }
 
   .grid.is-list .project__meta {
+    grid-column: 1;
     font-size: clamp(0.58rem, 3vw, 0.72rem);
   }
 
-  .grid.is-list .project__link {
-    width: 1.6rem;
+  .grid.is-list .project__link::after {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
   }
 }
 
@@ -1258,7 +1299,7 @@ p = "Photography" + "> see more"
   position: fixed;
   top: 1.25rem;
   left: 50%;
-  z-index: 100;
+  z-index: 130;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1300,9 +1341,58 @@ p = "Photography" + "> see more"
   transition: color 160ms ease, opacity 160ms ease;
 }
 
+.main-nav button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+}
+
 .main-nav a:hover,
-.main-nav a:focus-visible {
+.main-nav a:focus-visible,
+.main-nav button:hover,
+.main-nav button:focus-visible {
   color: #fff;
+}
+
+.contact-popover {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 1;
+  min-width: min(17rem, calc(100vw - 2rem));
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.72rem;
+  text-align: left;
+}
+
+.contact-popover[hidden] {
+  display: none;
+}
+
+.contact-popover p {
+  margin: 0 0 0.65rem;
+}
+
+.contact-popover__copy {
+  color: inherit;
+  opacity: 0.76;
+}
+
+.contact-popover__status {
+  display: inline-block;
+  margin-left: 0.55rem;
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .nav-separator {
@@ -1384,7 +1474,7 @@ p = "Photography" + "> see more"
 
 .portfolio-projects {
   background: #000;
-  scroll-margin-top: 1rem;
+  scroll-margin-top: 5rem;
   padding-top: clamp(7rem, 14vw, 13rem);
 }
 
@@ -1606,6 +1696,8 @@ a { text-underline-offset: .18em; }
 
 .case-study__back a {
   color: var(--text);
+  text-decoration: none;
+  transition: color 180ms ease, opacity 180ms ease;
 }
 
 .case-study__next {
@@ -1640,12 +1732,14 @@ a { text-underline-offset: .18em; }
   .case-study__summary,
   .case-study__media-grid { grid-template-columns: 1fr; }
   .case-study__back {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .case-study__next {
-    text-align: left;
+    margin-left: auto;
+    text-align: right;
   }
 
   .project-page-nav,

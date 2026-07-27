@@ -19,7 +19,14 @@
 <body id="top">
 <section aria-labelledby="hero-name" class="hero-home">
 <nav aria-label="Main navigation" class="main-nav">
-<a href="mailto:gabrielaljundi7@gmail.com">CONTACT</a>
+<a href="#projects">PROJECTS</a>
+<a href="about.html">ABOUT</a>
+<button aria-controls="contact-popover" aria-expanded="false" class="main-nav__contact" type="button">CONTACT</button>
+<div class="contact-popover" hidden="" id="contact-popover" role="dialog">
+<p>gabrielaljundi7@gmail.com</p>
+<button class="contact-popover__copy" type="button">Copy email</button>
+<span aria-live="polite" class="contact-popover__status"></span>
+</div>
 </nav>
 <div aria-label="Observing carefully. Thinking sensibly. Acting together." class="statement">
 <div class="statement-item">
@@ -59,27 +66,27 @@
 <ul class="projects" role="list">
 <li class="project" data-disciplines="web" data-project-number="01">
 <a aria-label="View Veloptix Consulting project" class="project__media veloptix-sketch-link" href="veloptix.html"><div aria-hidden="true" id="veloptix-canvas"></div></a>
-<div class="project__content"><h3 class="project__title">Veloptix Consulting</h3><p class="meta project__meta">Web design</p><p><a class="btn project__link" href="veloptix.html">See project</a></p></div>
+<div class="project__content"><a class="btn project__link" href="veloptix.html"><h3 class="project__title">Veloptix Consulting</h3><span class="meta project__meta">Web design</span><span class="project__link-label">See project</span></a></div>
 </li>
 <li class="project project--reverse" data-disciplines="graphic motion" data-project-number="02">
 <a aria-label="View Detroit Chicago project" class="project__media" href="detroitchicago.html"><img alt="DETROIT CHICAGO vinyl — Generative graphics" loading="lazy" src="imgs/H_P2.webp"/></a>
-<div class="project__content"><h3 class="project__title"><i>DETROIT</i> · <i>CHICAGO</i> vinyl</h3><p class="meta project__meta">Generative graphics</p><p><a class="btn project__link" href="detroitchicago.html">See more</a></p></div>
+<div class="project__content"><a class="btn project__link" href="detroitchicago.html"><h3 class="project__title"><i>DETROIT</i> · <i>CHICAGO</i> vinyl</h3><span class="meta project__meta">Generative graphics</span><span class="project__link-label">See more</span></a></div>
 </li>
 <li class="project" data-disciplines="motion graphic" data-project-number="03">
 <a aria-label="View PEPPERONCINO project" class="project__media" href="pepperoncino.html"><video autoplay="" loop="" muted="" playsinline="" preload="metadata"><source src="imgs/Pepperoncino.mp4" type="video/mp4"/></video></a>
-<div class="project__content"><h3 class="project__title">PEPPERONCINO</h3><p class="meta project__meta">Motion graphics + typography</p><p><a class="btn project__link" href="pepperoncino.html">See more</a></p></div>
+<div class="project__content"><a class="btn project__link" href="pepperoncino.html"><h3 class="project__title">PEPPERONCINO</h3><span class="meta project__meta">Motion graphics + typography</span><span class="project__link-label">See more</span></a></div>
 </li>
 <li class="project project--reverse" data-disciplines="photo" data-project-number="04">
 <a aria-label="View Still lifes project" class="project__media" href="stilllifes.html"><img alt="Still lifes for the 2020 season" loading="lazy" src="imgs/H_P1.webp"/></a>
-<div class="project__content"><h3 class="project__title">Still lifes for the 2020 season</h3><p class="meta project__meta">Photography</p><p><a class="btn project__link" href="stilllifes.html">See more</a></p></div>
+<div class="project__content"><a class="btn project__link" href="stilllifes.html"><h3 class="project__title">Still lifes for the 2020 season</h3><span class="meta project__meta">Photography</span><span class="project__link-label">See more</span></a></div>
 </li>
 <li class="project" data-disciplines="photo" data-project-number="05">
 <a aria-label="View Las que se dejaron capturar project" class="project__media" href="lasquesedejaroncapturar.html"><img alt="Las que se dejaron capturar — Photography" loading="lazy" src="imgs/H_P3.webp"/></a>
-<div class="project__content"><h3 class="project__title">Las que se dejaron capturar</h3><p class="meta project__meta">Photography</p><p><a class="btn project__link" href="lasquesedejaroncapturar.html">See more</a></p></div>
+<div class="project__content"><a class="btn project__link" href="lasquesedejaroncapturar.html"><h3 class="project__title">Las que se dejaron capturar</h3><span class="meta project__meta">Photography</span><span class="project__link-label">See more</span></a></div>
 </li>
 <li class="project project--reverse" data-disciplines="graphic motion" data-project-number="06">
 <a aria-label="Watch Gabriel Aljundi's showreel" class="project__media" href="showreel.html"><video autoplay="" loop="" muted="" playsinline="" preload="metadata"><source src="imgs/REEL_preview.mp4" type="video/mp4"/></video></a>
-<div class="project__content"><h3 class="project__title">SHOWREEL</h3><p class="meta project__meta">Graphic design + motion + video</p><p><a class="btn project__link" href="showreel.html">Watch full reel</a></p></div>
+<div class="project__content"><a class="btn project__link" href="showreel.html"><h3 class="project__title">SHOWREEL</h3><span class="meta project__meta">Graphic design + motion + video</span><span class="project__link-label">Watch full reel</span></a></div>
 </li>
 </ul>
 <div class="back-to-top">
