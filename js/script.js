@@ -78,42 +78,18 @@ function initPointerEffects() {
         return;
     }
 
-    const magneticSelector = '.main-nav a, .main-nav button, .project-page-nav a, .project__link, .back-to-top a, .about-contact a';
+    const magneticSelector = '.main-nav a, .main-nav button, .project__link, .back-to-top a, .about-contact a, .case-study__back a';
     const magneticTargets = Array.from(document.querySelectorAll(magneticSelector));
 
     if (!magneticTargets.length) {
         return;
     }
 
-    const halo = document.createElement('div');
-    halo.className = 'cursor-halo';
-    halo.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(halo);
-
     magneticTargets.forEach(function(target) {
         target.classList.add('magnetic-link');
     });
 
-    let targetX = window.innerWidth / 2;
-    let targetY = window.innerHeight / 2;
-    let currentX = targetX;
-    let currentY = targetY;
-    let hasPointer = false;
     let activeMagnetic = null;
-    let animationFrame = null;
-
-    function renderHalo() {
-        currentX += (targetX - currentX) * 0.16;
-        currentY += (targetY - currentY) * 0.16;
-        halo.style.transform = 'translate3d(' + currentX.toFixed(2) + 'px, ' + currentY.toFixed(2) + 'px, 0) translate(-50%, -50%) scale(var(--cursor-halo-scale, 1))';
-        animationFrame = window.requestAnimationFrame(renderHalo);
-    }
-
-    function startHalo() {
-        if (animationFrame === null) {
-            animationFrame = window.requestAnimationFrame(renderHalo);
-        }
-    }
 
     function resetMagnetic(target) {
         if (!target) {
@@ -125,12 +101,6 @@ function initPointerEffects() {
     }
 
     function stopEffects() {
-        if (animationFrame !== null) {
-            window.cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-        }
-
-        halo.remove();
         magneticTargets.forEach(function(target) {
             resetMagnetic(target);
             target.classList.remove('magnetic-link');
@@ -142,17 +112,6 @@ function initPointerEffects() {
             return;
         }
 
-        targetX = event.clientX;
-        targetY = event.clientY;
-
-        if (!hasPointer) {
-            currentX = targetX;
-            currentY = targetY;
-            hasPointer = true;
-            halo.classList.add('is-visible');
-            startHalo();
-        }
-
         const nextMagnetic = event.target.closest(magneticSelector);
 
         if (activeMagnetic && activeMagnetic !== nextMagnetic) {
@@ -160,7 +119,6 @@ function initPointerEffects() {
         }
 
         activeMagnetic = nextMagnetic;
-        halo.classList.toggle('is-interactive', Boolean(activeMagnetic));
 
         if (activeMagnetic) {
             const rect = activeMagnetic.getBoundingClientRect();
@@ -175,14 +133,12 @@ function initPointerEffects() {
         if (activeMagnetic && (!event.relatedTarget || !activeMagnetic.contains(event.relatedTarget))) {
             resetMagnetic(activeMagnetic);
             activeMagnetic = null;
-            halo.classList.remove('is-interactive');
         }
     }, { passive: true });
 
     window.addEventListener('pointerleave', function() {
         resetMagnetic(activeMagnetic);
         activeMagnetic = null;
-        halo.classList.remove('is-visible', 'is-interactive');
     }, { passive: true });
 
     function handleCapabilityChange() {
@@ -288,8 +244,8 @@ function initSubtleParallax() {
         parallaxItems.push({
             element: element,
             property: '--parallax-y',
-            speed: -0.075,
-            max: 22
+            speed: -0.045,
+            max: 12
         });
     });
 

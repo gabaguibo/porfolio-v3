@@ -172,37 +172,12 @@
   left: 0;
   z-index: 120;
   width: 100%;
-  height: 2px;
+  height: 4px;
   background: linear-gradient(90deg, #00c5d5, #ff7b35);
   pointer-events: none;
   transform: scaleX(var(--reading-progress, 0));
   transform-origin: left;
   will-change: transform;
-}
-
-.cursor-halo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 90;
-  width: clamp(8rem, 14vw, 13rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(0, 197, 213, 0.28) 24%, rgba(255, 123, 53, 0.16) 46%, rgba(255, 123, 53, 0) 72%);
-  opacity: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  transform: translate3d(-50%, -50%, 0) scale(var(--cursor-halo-scale, 1));
-  transition: opacity 220ms ease;
-  will-change: transform, opacity;
-}
-
-.cursor-halo.is-visible {
-  opacity: 0.68;
-}
-
-.cursor-halo.is-interactive {
-  --cursor-halo-scale: 0.64;
 }
 
 .magnetic-link {
@@ -213,10 +188,10 @@
 
 .main-nav a.magnetic-link,
 .main-nav button.magnetic-link,
-.project-page-nav a.magnetic-link,
 .project__link.magnetic-link,
 .back-to-top a.magnetic-link,
-.about-contact a.magnetic-link {
+.about-contact a.magnetic-link,
+.case-study__back a.magnetic-link {
   transition: color 160ms ease, opacity 180ms ease, transform 180ms ease;
 }
 
@@ -258,6 +233,10 @@
   transform: translate3d(0, var(--parallax-y, 0), 0) scale(1.035);
   transform-origin: center;
   will-change: transform;
+}
+
+.project__media > .parallax-layer {
+  transform: translate3d(0, var(--parallax-y, 0), 0) scale(1.08);
 }
 
 html {
@@ -983,8 +962,9 @@ p = "Photography" + "> see more"
     transform: scale(1.06);
   }
 
-  .project:hover .project__media > .parallax-layer {
-    transform: translate3d(0, var(--parallax-y, 0), 0) scale(1.09);
+  .project:hover .project__media > .parallax-layer,
+  .project:hover .project__media > #veloptix-canvas.parallax-layer {
+    transform: translate3d(0, var(--parallax-y, 0), 0) scale(1.11);
   }
 
   .project:hover .project__meta {
@@ -1046,6 +1026,7 @@ p = "Photography" + "> see more"
 .grid.is-list .project__media > video,
 .grid.is-list .project__media > canvas,
 .grid.is-list .project__media > #veloptix-canvas,
+.grid.is-list .project__media > .parallax-layer,
 .grid.is-list .project:hover .project__media > img,
 .grid.is-list .project:hover .project__media > video,
 .grid.is-list .project:hover .project__media > canvas,
@@ -1056,18 +1037,19 @@ p = "Photography" + "> see more"
 }
 
 .grid.is-list .project__content {
-  grid-column: 3;
-  grid-row: 1;
-  display: block;
-  padding: 0;
+  display: contents;
   pointer-events: auto;
-  transform: none;
 }
 
 .grid.is-list .project__link {
-  position: static;
+  position: relative;
+  z-index: 2;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: stretch;
+  align-self: stretch;
   display: grid;
-  grid-template-columns: minmax(0, auto) max-content 2rem;
+  grid-template-columns: minmax(2.6rem, auto) minmax(0, 0.2fr) minmax(0, auto) max-content 2rem;
   align-items: baseline;
   justify-content: start;
   column-gap: clamp(0.55rem, 1.5vw, 1rem);
@@ -1081,16 +1063,13 @@ p = "Photography" + "> see more"
 }
 
 .grid.is-list .project__link::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  content: none;
 }
 
 .grid.is-list .project__title {
   position: relative;
   z-index: 2;
-  grid-column: 1;
+  grid-column: 3;
   max-width: none;
   min-width: 0;
   font-size: clamp(1rem, 2.4vw, 1.7rem);
@@ -1100,7 +1079,7 @@ p = "Photography" + "> see more"
 .grid.is-list .project__meta {
   position: relative;
   z-index: 2;
-  grid-column: 2;
+  grid-column: 4;
   order: initial;
   width: auto;
   max-width: none;
@@ -1124,7 +1103,7 @@ p = "Photography" + "> see more"
 .grid.is-list .project__link::after {
   position: relative;
   z-index: 2;
-  grid-column: 3;
+  grid-column: 5;
   justify-self: end;
   font-size: 1.1rem;
 }
@@ -1197,25 +1176,26 @@ p = "Photography" + "> see more"
   }
 
   .grid.is-list .project__content {
-    grid-column: 2;
+    display: contents;
   }
 
   .grid.is-list .project__link {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(2rem, auto) minmax(0, 1fr) auto;
     row-gap: 0.32rem;
   }
 
   .grid.is-list .project__title {
+    grid-column: 2;
     font-size: clamp(0.95rem, 5.4vw, 1.35rem);
   }
 
   .grid.is-list .project__meta {
-    grid-column: 1;
+    grid-column: 2;
     font-size: clamp(0.58rem, 3vw, 0.72rem);
   }
 
   .grid.is-list .project__link::after {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1 / span 2;
     align-self: center;
   }
@@ -1304,7 +1284,7 @@ p = "Photography" + "> see more"
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: clamp(0.45rem, 1.2vw, 0.9rem);
+  gap: clamp(0.7rem, 2vw, 1.55rem);
   width: fit-content;
   max-width: calc(100vw - 2rem);
   padding: 0.34rem 0.54rem;
@@ -1478,6 +1458,10 @@ p = "Photography" + "> see more"
   padding-top: clamp(7rem, 14vw, 13rem);
 }
 
+.kinetic-disciplines + .portfolio-projects {
+  padding-top: clamp(3rem, 7vw, 6rem);
+}
+
 .back-to-top {
   margin-top: clamp(3rem, 6vw, 4.5rem);
   padding: 0.5rem 0 1.25rem;
@@ -1532,6 +1516,13 @@ p = "Photography" + "> see more"
   }
 }
 
+@media (min-width: 1700px) and (orientation: landscape) {
+  .statement {
+    width: min(calc(100% - 16rem), 1720px);
+    gap: clamp(8rem, 10vw, 13rem);
+  }
+}
+
 @media (max-width: 767px) {
   .hero-home {
     padding: 1rem 1rem 1.25rem;
@@ -1555,10 +1546,6 @@ p = "Photography" + "> see more"
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  .cursor-halo {
-    display: none;
   }
 
   .magnetic-link {
@@ -1619,30 +1606,43 @@ a { text-underline-offset: .18em; }
   min-height: 100svh;
   position: relative;
   overflow-x: hidden;
-  background: linear-gradient(180deg, #0b0b0b 8%, var(--blue) 70%, #ff822f 125%);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.34)),
+    url("imgs/gradient.webp") center / cover no-repeat #000;
 }
-.about-nav { z-index: 100; }
+
+.about-nav { z-index: 130; }
+
 .about-main {
   position: relative;
   z-index: 3;
-  min-height: calc(100svh - 5rem);
-  display: grid;
-  place-items: center;
-  padding: clamp(5rem, 10vw, 9rem) 1.25rem;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6.25rem, 11vw, 10rem) clamp(1.25rem, 4vw, 3rem) clamp(4rem, 8vw, 7rem);
 }
+
 .about-copy {
   width: min(100%, 760px);
   text-align: center;
   font-size: clamp(1rem, 1.45vw, 1.28rem);
+  line-height: 1.55;
+  overflow-wrap: break-word;
 }
+
 .about-copy p { margin: 0 0 1.5rem; color: rgba(255,255,255,.93); }
 .about-copy a { color: inherit; }
+
 .about-location {
   margin-top: clamp(2rem, 5vw, 3.5rem) !important;
   color: rgba(255,255,255,.72) !important;
   font-size: .82em;
 }
+
 .about-contact { padding-top: 1rem; font-size: .9em; }
+
+.about-contact a { overflow-wrap: anywhere; }
 
 .project-detail-page { background: var(--page-bg); color: var(--text); }
 .project-detail-page h1,
@@ -1652,7 +1652,6 @@ a { text-underline-offset: .18em; }
 .project-detail-page nav,
 .project-detail-page a { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
 
-.project-page-nav,
 .legacy-project-nav {
   position: fixed;
   top: 1.25rem;
@@ -1667,8 +1666,7 @@ a { text-underline-offset: .18em; }
   font-weight: 600;
   white-space: nowrap;
 }
-.legacy-project-nav a,
-.project-page-nav a { color: inherit; text-decoration: none; }
+.legacy-project-nav a { color: inherit; text-decoration: none; }
 .legacy-project-nav svg { fill: currentColor; }
 
 .case-study {
@@ -1732,9 +1730,13 @@ a { text-underline-offset: .18em; }
   .case-study__summary,
   .case-study__media-grid { grid-template-columns: 1fr; }
   .case-study__back {
-    align-items: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-wrap: nowrap;
     justify-content: space-between;
+  }
+
+  .case-study__back a {
+    max-width: 48%;
   }
 
   .case-study__next {
@@ -1742,7 +1744,6 @@ a { text-underline-offset: .18em; }
     text-align: right;
   }
 
-  .project-page-nav,
   .legacy-project-nav { top: .9rem; }
 }
 

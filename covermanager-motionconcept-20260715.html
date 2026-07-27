@@ -11,6 +11,8 @@
   />
 
   <link href="styles.css" rel="stylesheet" type="text/css" />
+  <script defer src="js/script.js"></script>
+  <link href="imgs/thumbnail.webp" rel="icon" type="image/webp" />
 
   <style>
     :root {
@@ -205,6 +207,16 @@
 </head>
 
 <body>
+  <nav aria-label="Main navigation" class="main-nav">
+    <a href="index.html#projects">PROJECTS</a>
+    <a href="about.html">ABOUT</a>
+    <button aria-controls="contact-popover" aria-expanded="false" class="main-nav__contact" type="button">CONTACT</button>
+    <div class="contact-popover" hidden id="contact-popover" role="dialog">
+      <p>gabrielaljundi7@gmail.com</p>
+      <button class="contact-popover__copy" type="button">Copy email</button>
+      <span aria-live="polite" class="contact-popover__status"></span>
+    </div>
+  </nav>
   <main class="project-embed-page">
     <div class="embed-shell">
       <div class="embed-frame" id="video-frame">

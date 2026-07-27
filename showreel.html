@@ -14,12 +14,19 @@
 <link href="imgs/thumbnail.webp" rel="icon" type="image/webp"/>
 </head>
 <body class="project-detail-page">
-<nav aria-label="Project navigation" class="project-page-nav">
-<a href="index.html#projects">PROJECTS</a><span aria-hidden="true">·</span><a href="mailto:gabrielaljundi7@gmail.com">CONTACT</a>
+<nav aria-label="Main navigation" class="main-nav">
+<a href="index.html#projects">PROJECTS</a>
+<a href="about.html">ABOUT</a>
+<button aria-controls="contact-popover" aria-expanded="false" class="main-nav__contact" type="button">CONTACT</button>
+<div class="contact-popover" hidden="" id="contact-popover" role="dialog">
+<p>gabrielaljundi7@gmail.com</p>
+<button class="contact-popover__copy" type="button">Copy email</button>
+<span aria-live="polite" class="contact-popover__status"></span>
+</div>
 </nav>
 <main class="case-study">
 <header class="case-study__header">
-<p class="case-study__eyebrow">Motion · Graphic design · Video</p><h1>SHOWREEL</h1><h2>A selection of motion, graphic and audiovisual work.</h2></header>
+<p class="case-study__eyebrow">Video</p><h1>SHOWREEL</h1><h2>A selection of motion, graphic and audiovisual work.</h2></header>
 <section aria-label="Project overview" class="case-study__intro">
 <div class="case-study__intro-copy"><p>This reel brings together selected fragments from motion graphics, visual identities, video editing and graphic experiments. It offers a compact overview of my approach to rhythm, composition, typography and image-making across different formats.</p></div><div class="case-study__facts"><div class="case-study__fact"><h3>Role</h3><p>Art direction, graphic design, animation and video editing.</p></div><div class="case-study__fact"><h3>Tools</h3><p>Adobe After Effects, Premiere Pro, Illustrator, Photoshop and Blender.</p></div><div class="case-study__fact"><h3>Result</h3><p>A concise overview of multidisciplinary audiovisual work developed across personal and professional projects.</p></div></div></section>
 <section aria-label="Project media" class="case-study__media"><div class="carousel project-carousel carousel--single" data-carousel="true"><div class="carousel-inner"><div class="carousel-item active"><video controls="" playsinline="" poster="imgs/REEL_poster.webp" preload="metadata"><source src="imgs/REEL_conaudio.mp4" type="video/mp4"/>Your browser does not support the video tag.</video></div></div></div></section>
