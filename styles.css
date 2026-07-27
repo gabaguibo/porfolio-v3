@@ -1099,6 +1099,53 @@ p = "Photography" + "> see more"
   opacity: 0.86;
 }
 
+.kinetic-disciplines {
+  width: 100%;
+  overflow: hidden;
+  margin: clamp(1.5rem, 4vw, 3rem) 0 clamp(2rem, 5vw, 4rem);
+  padding: clamp(0.65rem, 1.5vw, 0.95rem) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.kinetic-disciplines__track {
+  display: flex;
+  width: max-content;
+  gap: clamp(1.4rem, 4vw, 3rem);
+  color: rgba(255, 255, 255, 0.58);
+  font-family: var(--font-body);
+  font-size: clamp(0.74rem, 1.4vw, 1.1rem);
+  white-space: nowrap;
+  animation: kinetic-disciplines-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+.kinetic-disciplines__group {
+  display: flex;
+  gap: clamp(1.4rem, 4vw, 3rem);
+}
+
+.kinetic-disciplines__track span {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.4rem, 4vw, 3rem);
+}
+
+.kinetic-disciplines__track span::after {
+  content: "/";
+  color: rgba(255, 255, 255, 0.24);
+}
+
+@keyframes kinetic-disciplines-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-50% - clamp(0.7rem, 2vw, 1.5rem)), 0, 0);
+  }
+}
+
 @media (max-width: 767px) {
   .project-view-toggle {
     justify-content: flex-start;
@@ -1154,9 +1201,11 @@ p = "Photography" + "> see more"
   .project:hover .project__media > #veloptix-canvas,
   .project:hover .project__media > .parallax-layer,
   .project:hover .project__link::after,
-  .project:focus-within .project__link::after {
+  .project:focus-within .project__link::after,
+  .kinetic-disciplines__track {
     filter: none !important;
     transform: none !important;
+    animation: none !important;
   }
 }
 
@@ -1357,30 +1406,6 @@ p = "Photography" + "> see more"
   opacity: 0.95;
 }
 
-.project-page-nav {
-  position: fixed;
-  top: 1.25rem;
-  left: 50%;
-  z-index: 10;
-  display: flex;
-  gap: 0.65rem;
-  transform: translateX(-50%);
-  color: #919191;
-  font-size: 0.78rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.project-page-nav a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.project-page-nav a:hover,
-.project-page-nav a:focus-visible {
-  color: #fff;
-}
-
 .showreel-page {
   width: min(92%, 1200px);
   min-height: 100svh;
@@ -1570,8 +1595,35 @@ a { text-underline-offset: .18em; }
 .case-study__summary p { margin: 0; color: #bdbdbd; font-size: clamp(.84rem, 1vw, .98rem); line-height: 1.6; }
 .case-study__media { display: grid; gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(4rem, 8vw, 7rem); }
 .case-study__media-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(1rem, 2vw, 2rem); }
-.case-study__back { margin-top: 4rem; }
-.case-study__back a { color: var(--text); }
+.case-study__back {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 4rem;
+}
+
+.case-study__back a {
+  color: var(--text);
+}
+
+.case-study__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: right;
+}
+
+.case-study__next span {
+  display: inline-block;
+  transition: transform 180ms ease;
+}
+
+.case-study__next:hover span,
+.case-study__next:focus-visible span {
+  transform: translate3d(0.28rem, 0, 0);
+}
 
 /* More consistent project typography without changing legacy layouts. */
 .project-detail-page p { line-height: 1.65; }
@@ -1587,6 +1639,15 @@ a { text-underline-offset: .18em; }
   .portfolio-projects { padding-top: 6rem; }
   .case-study__summary,
   .case-study__media-grid { grid-template-columns: 1fr; }
+  .case-study__back {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .case-study__next {
+    text-align: left;
+  }
+
   .project-page-nav,
   .legacy-project-nav { top: .9rem; }
 }
