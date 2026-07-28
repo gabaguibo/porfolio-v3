@@ -1,6 +1,7 @@
 // Carousel personalizado (reemplazo de Bootstrap)
 document.addEventListener('DOMContentLoaded', function() {
     initReadingProgress();
+    initFloatingNav();
     initPointerEffects();
     initScrollEntryAnimations();
     initSubtleParallax();
@@ -24,37 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initReadingProgress() {
+    if (document.body.classList.contains('about-page')) {
+        return;
+    }
+
     const progressBar = document.createElement('div');
     progressBar.className = 'reading-progress';
     progressBar.setAttribute('aria-hidden', 'true');
     document.body.prepend(progressBar);
 
-    const nav = document.querySelector('.main-nav');
-    const directionThreshold = 14;
-    const topThreshold = 72;
-    let lastStableY = window.scrollY || window.pageYOffset || 0;
     let ticking = false;
 
     function updateProgress() {
         const scrollY = window.scrollY || window.pageYOffset || 0;
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 1;
-        const nearTop = scrollY <= topThreshold;
-        const nearBottom = maxScroll - scrollY <= 2;
-        const delta = scrollY - lastStableY;
 
         progressBar.style.setProperty('--reading-progress', progress.toFixed(4));
-
-        if (nav && Math.abs(delta) >= directionThreshold) {
-            nav.classList.toggle('nav-is-hidden', delta > 0 && !nearTop && !nearBottom);
-            lastStableY = scrollY;
-        }
-
-        if (nav && (nearTop || nearBottom)) {
-            nav.classList.remove('nav-is-hidden');
-            lastStableY = scrollY;
-        }
-
         ticking = false;
     }
 
@@ -68,6 +55,50 @@ function initReadingProgress() {
     updateProgress();
     window.addEventListener('scroll', requestProgressUpdate, { passive: true });
     window.addEventListener('resize', requestProgressUpdate, { passive: true });
+}
+
+function initFloatingNav() {
+    const nav = document.querySelector('.main-nav');
+
+    if (!nav) {
+        return;
+    }
+
+    const directionThreshold = 14;
+    const topThreshold = 72;
+    let lastStableY = window.scrollY || window.pageYOffset || 0;
+    let ticking = false;
+
+    function updateNavVisibility() {
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const nearTop = scrollY <= topThreshold;
+        const nearBottom = maxScroll - scrollY <= 2;
+        const delta = scrollY - lastStableY;
+
+        if (Math.abs(delta) >= directionThreshold) {
+            nav.classList.toggle('nav-is-hidden', delta > 0 && !nearTop && !nearBottom);
+            lastStableY = scrollY;
+        }
+
+        if (nearTop || nearBottom) {
+            nav.classList.remove('nav-is-hidden');
+            lastStableY = scrollY;
+        }
+
+        ticking = false;
+    }
+
+    function requestNavUpdate() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateNavVisibility);
+            ticking = true;
+        }
+    }
+
+    updateNavVisibility();
+    window.addEventListener('scroll', requestNavUpdate, { passive: true });
+    window.addEventListener('resize', requestNavUpdate, { passive: true });
 }
 
 function initPointerEffects() {
@@ -680,7 +711,7 @@ function initHeroScrollTransition() {
 
     function createHeroTimeline(values) {
         gsap.set(hero, { '--hero-overlay-opacity': 0 });
-        gsap.set(heroContent, { clearProps: 'opacity,transform' });
+        gsap.set(heroContent, { clearProps: 'opacity,transform,color' });
 
         const timeline = gsap.timeline({
             defaults: { ease: 'none' },
@@ -694,6 +725,7 @@ function initHeroScrollTransition() {
 
         timeline
             .to(hero, { '--hero-overlay-opacity': values.overlayOpacity, duration: 1 }, 0)
+            .to(identity, { color: '#f1f0ec', duration: 0.32 }, 0.12)
             .to(statement, { opacity: 0.04, y: values.statementY, duration: 0.72 }, 0.18)
             .to(identity, { opacity: 0.03, y: values.identityY, duration: 0.5 }, 0.52);
     }
